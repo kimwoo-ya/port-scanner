@@ -1,0 +1,95 @@
+/* 전체 레이아웃 */
+.panel {
+  margin: 20px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  font-family: system-ui, sans-serif;
+}
+
+/* 상단 버튼 영역 */
+.controls {
+  display: flex;
+  gap: 10px;
+  padding: 10px 20px;
+}
+
+.btn {
+  background: #4a90e2;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.btn:hover {
+  background: #357ec7;
+}
+
+.btn:disabled {
+  background: #7faee0;
+  cursor: not-allowed;
+}
+
+.reset-btn {
+  background: #888;
+}
+
+.reset-btn:hover {
+  background: #666;
+}
+
+/* 소형 버튼 */
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+.btn-sm.danger {
+  /*background: #e74c3c;*/
+}
+
+.btn-sm.danger:hover {
+  /*background: #c0392b;*/
+}
+
+/* 테이블 */
+.port-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.port-table th,
+.port-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.port-table th {
+  background: #f0f4ff;
+  text-align: left;
+  font-weight: 600;
+}
+
+/* 프로세스 그룹 헤더 */
+.proc-header {
+  background: #f7f7f7;
+  font-weight: bold;
+  border-top: 2px solid #ddd;
+}
+
+.proc-header td {
+  padding: 12px;
+}
+
+/* 포트 row hover 효과 */
+.port-row:hover {
+  background: #f5faff;
+  transition: background 0.15s;
+}
