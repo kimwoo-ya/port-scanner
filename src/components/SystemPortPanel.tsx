@@ -28,7 +28,7 @@ const SystemPortPanel = () => {
               <th>Local Port</th>
               <th>PID</th>
               <th>State</th>
-              <th>kill?</th>
+              <th>Options</th>
             </tr>
           </thead>
           <tbody>

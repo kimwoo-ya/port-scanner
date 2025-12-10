@@ -24,7 +24,7 @@ export function TrayStatusPanel({ trayStatus, windowVisible }: Props) {
         </p>
       </div>
 
-      <div
+      {/*<div
         style={{
           background: '#e0f2fe',
           padding: '20px',
@@ -44,9 +44,9 @@ export function TrayStatusPanel({ trayStatus, windowVisible }: Props) {
             <strong>트레이 아이콘 더블 클릭:</strong> (필요 시 로직 추가)
           </li>
         </ul>
-      </div>
+      </div>*/}
 
-      <div
+      {/*<div
         style={{
           background: '#fef3c7',
           padding: '20px',
@@ -66,9 +66,9 @@ export function TrayStatusPanel({ trayStatus, windowVisible }: Props) {
             <strong>종료:</strong> 애플리케이션 완전 종료
           </li>
         </ul>
-      </div>
+      </div>*/}
 
-      <div
+      {/*<div
         style={{
           background: '#fee2e2',
           padding: '20px',
@@ -78,7 +78,7 @@ export function TrayStatusPanel({ trayStatus, windowVisible }: Props) {
       >
         <h2 style={{ marginTop: 0 }}>🔍 개발자 콘솔 확인</h2>
         <p>브라우저 개발자 도구 콘솔을 열어서 트레이 이벤트 로그를 확인하세요!</p>
-      </div>
+      </div>*/}
     </>
   );
 }
