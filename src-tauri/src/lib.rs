@@ -1,89 +1,9 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-//#[tauri::command]
-//fn greet(name: &str) -> String {
-//    format!("Hello, {}! You've been greeted from Rust!", name)
-//}
-
-//#[cfg_attr(mobile, tauri::mobile_entry_point)]
-//pub fn run() {
-//    tauri::Builder::default()
-//.plugin(tauri_plugin_shell::init())
-//        .plugin(tauri_plugin_opener::init())
-//        .invoke_handler(tauri::generate_handler![greet])
-//        .run(tauri::generate_context!())
-//        .expect("error while running tauri application");
-//}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//use tauri::Manager;
-
-//#[cfg_attr(mobile, tauri::mobile_entry_point)]
-//pub fn run() {
-//    tauri::Builder::default()
-//        .plugin(tauri_plugin_shell::init())
-//        .invoke_handler(tauri::generate_handler![quit_app])
-//        .run(tauri::generate_context!())
-//        .expect("error while running tauri application");
-//}
-
-//#[tauri::command]
-//fn quit_app(app: tauri::AppHandle) {
-//    app.exit(0);
-//}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//use tauri::command;
-//use netstat2::{
-//    get_sockets_info,
-//    AddressFamilyFlags,
-//    ProtocolFlags,
-//    ProtocolSocketInfo,
-//};
-//use serde_json::json;
-
-//#[command]
-//fn get_ports() -> Vec<serde_json::Value> {
-//    let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;
-//    let proto_flags = ProtocolFlags::TCP | ProtocolFlags::UDP;
-
-//    let sockets = get_sockets_info(af_flags, proto_flags).unwrap();
-
-//    sockets
-//        .into_iter()
-//        .map(|s| {
-//            let (local_port, remote_port, state) = match s.protocol_socket_info {
-//                ProtocolSocketInfo::Tcp(tcp) => (
-//                    tcp.local_port,
-//                    tcp.remote_port,
-//                    format!("{:?}", tcp.state),
-//                ),
-//                ProtocolSocketInfo::Udp(udp) => (
-//                    udp.local_port,
-//                    udp.remote_port,
-//                    "UDP".to_string(),
-//                ),
-//            };
-
-//            json!({
-//                "local_port": local_port,
-//                "remote_port": remote_port,
-//                "pid": s.associated_pids.get(0).cloned().unwrap_or(0),
-//                "state": state
-//            })
-//        })
-//        .collect()
-//}
-
-//pub fn run() {
-//    tauri::Builder::default()
-//        .invoke_handler(tauri::generate_handler![
-//            get_ports
-//        ])
-//        .run(tauri::generate_context!())
-//        .expect("error while running tauri application");
-//}
-
-use tauri::{command, Manager};
+// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+use tauri_plugin_positioner::{WindowExt, Position};
+use tauri::{
+    tray::{TrayIconBuilder, TrayIconEvent, MouseButton, MouseButtonState},
+    command, Manager,
+};
 use netstat2::{
     get_sockets_info,
     AddressFamilyFlags,
@@ -93,39 +13,76 @@ use netstat2::{
 use serde_json::json;
 use sysinfo::{System, Pid, Process};
 
-fn get_process_name(pid: u32) -> String {
-    let mut sys = System::new_all();
-    sys.refresh_all();
-
-    // ✅ Pid::from_u32()는 직접 Pid 반환
-    let pid_sys = Pid::from_u32(pid);
-    sys.process(pid_sys)
-        .map(|p| p.name().to_string())
-        .unwrap_or_else(|| "unknown".to_string())
-}
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        // 사용중인 플러그인
-        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_positioner::init())
         .plugin(tauri_plugin_store::Builder::default().build())
+        .setup(|app| {
+            let icon = app.default_window_icon()
+                .cloned()
+                .ok_or("Failed to load icon")?;
 
-        // 모든 command 등록
-        .invoke_handler(tauri::generate_handler![
-            quit_app,
-            get_ports,
-        ])
+            // 트레이 아이콘
+            TrayIconBuilder::new()
+                .icon(icon)
+                .on_tray_icon_event(|tray, event| {
 
-        // 실행
+                    // 1) Positioner에게 이벤트 전달 → 트레이 위치 저장됨
+                    tauri_plugin_positioner::on_tray_event(tray.app_handle(), &event);
+
+                    // 2) 좌클릭 시 창 표시/숨김 토글 및 위치 이동
+                    if let TrayIconEvent::Click {
+                        button: MouseButton::Left,
+                        button_state: MouseButtonState::Up,
+                        ..
+                    } = event {
+
+                        if let Some(window) = tray.app_handle().get_webview_window("main") {
+
+                            // 🔥 멀티모니터에서 현재 클릭한 트레이 디스플레이 기준으로 이동
+                            let _ = window.move_window(Position::TrayCenter);
+
+                            if window.is_visible().unwrap_or(false) {
+                                let _ = window.hide();
+                            } else {
+                                let _ = window.show();
+                                let _ = window.set_focus();
+                            }
+                        }
+                    }
+                })
+                .build(app)?;
+
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![get_ports, kill_by_pid])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+#[tauri::command]
+fn kill_by_pid(pid: u32) -> Result<(), String> {
+    #[cfg(any(target_os = "macos", target_os = "linux"))]
+    {
+        std::process::Command::new("kill")
+            .arg("-9")
+            .arg(pid.to_string())
+            .status()
+            .map_err(|e| format!("kill error: {}", e))?;
+    }
 
-#[command]
-fn quit_app(app: tauri::AppHandle) {
-    app.exit(0);
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("taskkill")
+            .args(&["/PID", &pid.to_string(), "/F"])
+            .status()
+            .map_err(|e| format!("taskkill error: {}", e))?;
+    }
+
+    Ok(())
 }
+
 #[command]
 fn get_ports() -> Vec<serde_json::Value> {
     let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;
@@ -157,32 +114,12 @@ fn get_ports() -> Vec<serde_json::Value> {
         .collect()
 }
 
-//#[command]
-//fn get_ports() -> Vec<serde_json::Value> {
-//    let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;
-//    let proto_flags = ProtocolFlags::TCP | ProtocolFlags::UDP;
+fn get_process_name(pid: u32) -> String {
+    let mut sys = System::new_all();
+    sys.refresh_all();
 
-//    let sockets = get_sockets_info(af_flags, proto_flags).unwrap();
-
-//    sockets
-//        .into_iter()
-//        .map(|s| {
-//            match s.protocol_socket_info {
-//                ProtocolSocketInfo::Tcp(tcp) => json!({
-//                    "local_port": tcp.local_port,
-//                    "remote_port": tcp.remote_port,
-//                    "pid": s.associated_pids.get(0).cloned().unwrap_or(0),
-//                    "state": format!("{:?}", tcp.state)
-//                }),
-
-//                ProtocolSocketInfo::Udp(udp) => json!({
-//                    "local_port": udp.local_port,
-//                    // UDP에는 remote_port가 없음 → null 또는 0 처리
-//                    "remote_port": null,
-//                    "pid": s.associated_pids.get(0).cloned().unwrap_or(0),
-//                    "state": "UDP"
-//                }),
-//            }
-//        })
-//        .collect()
-//}
+    let pid_sys = Pid::from_u32(pid);
+    sys.process(pid_sys)
+        .map(|p| p.name().to_string())
+        .unwrap_or_else(|| "unknown".to_string())
+}

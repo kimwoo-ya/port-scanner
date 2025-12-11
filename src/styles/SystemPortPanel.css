@@ -1,17 +1,14 @@
 /* 전체 레이아웃 */
 .panel {
-  margin: 20px;
   padding: 20px;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   font-family: system-ui, sans-serif;
 }
 
 /* 상단 버튼 영역 */
 .controls {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   padding: 10px 20px;
 }
 
@@ -61,7 +58,6 @@
 .port-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
   font-size: 14px;
 }
 

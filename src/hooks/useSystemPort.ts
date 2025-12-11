@@ -12,12 +12,24 @@ export const useSystemPort = () => {
   const storeRef = useRef<Store | null>(null);
   const [storeLoaded, setStoreLoaded] = useState(false);
 
+  useEffect(() => {
+    if (!storeLoaded) return;
+
+    // 3초마다 refetch
+    const interval = setInterval(() => {
+      fetchPorts();
+    }, 500);
+
+    // 언마운트 시 정리
+    return () => clearInterval(interval);
+  }, [storeLoaded]);
+
   // --- Store 로드 (한번만)
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const store = await Store.load('.settings.dat'); // 권한 설정이 되어 있어야 함
+        const store = await Store.load('.settings.dat');
         storeRef.current = store;
         if (!mounted) return;
 
@@ -67,6 +79,7 @@ export const useSystemPort = () => {
         await storeRef.current!.set('skipProcessNameList', hiddenProcesses);
         await storeRef.current!.save();
         fetchPorts();
+        console.log('fetchPorts called...');
       } catch (e) {
         console.error('[store] save error', e);
       }
@@ -114,16 +127,14 @@ export const useSystemPort = () => {
 
   // --- portDict 갱신 (ports가 바뀔 때마다)
   useEffect(() => {
-    if (ports.length > 0) {
-      const dict: PortInfoDict = ports.reduce((acc, port) => {
-        const name = port.process_name || 'unknown';
-        acc[name] ??= [];
-        acc[name].push(port);
-        return acc;
-      }, {} as PortInfoDict);
+    const dict: PortInfoDict = ports.reduce((acc, port) => {
+      const name = port.process_name || 'unknown';
+      acc[name] ??= [];
+      acc[name].push(port);
+      return acc;
+    }, {} as PortInfoDict);
 
-      setPortDict(dict);
-    }
+    setPortDict(dict);
   }, [ports]);
 
   // --- 스킵 프로세스 추가 (stale-free 함수형 업데이트)

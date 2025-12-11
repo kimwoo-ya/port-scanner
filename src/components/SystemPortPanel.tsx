@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
 import { useSystemPort } from '../hooks/useSystemPort';
 import '../styles/SystemPortPanel.css';
+import useProcessKill from '../hooks/useProcessKIll';
 
 const SystemPortPanel = () => {
   const { portDict, loading, refetch, addSkipProcess, resetStore, portCount } = useSystemPort();
+  const { killAndRefresh } = useProcessKill(refetch);
   useEffect(() => {
     //console.log('>>>>' + JSON.stringify(portDict));
+    console.log('Object.entries(portDict).length:' + Object.entries(portDict).length);
   }, [portDict]);
 
   return (
@@ -20,8 +23,6 @@ const SystemPortPanel = () => {
       </div>
 
       <div className="panel">
-        <h2>Opened Ports</h2>
-
         <table className="port-table">
           <thead>
             <tr>
@@ -32,7 +33,7 @@ const SystemPortPanel = () => {
             </tr>
           </thead>
           <tbody>
-            {portDict &&
+            {portDict && Object.entries(portDict).length > 0 ? (
               Object.entries(portDict)
                 .sort((o1, o2) => o1[0].localeCompare(o2[0]))
                 .map(([processName, ports]) => (
@@ -47,18 +48,29 @@ const SystemPortPanel = () => {
                     </tr>
                     {ports
                       .sort((o1, o2) => o1.local_port - o2.local_port)
-                      .map((port, i) => (
-                        <tr key={`${processName}-${port.local_port}-${i}`} className="port-row">
-                          <td>{port.local_port}</td>
-                          <td>{port.pid}</td>
-                          <td>{port.state}</td>
+                      .map((portInfo, i) => (
+                        <tr key={`${processName}-${portInfo.local_port}-${i}`} className="port-row">
+                          <td>{portInfo.local_port}</td>
+                          <td>{portInfo.pid}</td>
+                          <td>{portInfo.state}</td>
                           <td>
-                            <button className="btn-sm">🗑️</button>
+                            <button className="btn-sm" onClick={() => killAndRefresh(portInfo.pid)}>
+                              🗑️
+                            </button>
                           </td>
                         </tr>
                       ))}
                   </>
-                ))}
+                ))
+            ) : (
+              <>
+                <tr>
+                  <td colSpan={4}>
+                    <h3>nothing...</h3>
+                  </td>
+                </tr>
+              </>
+            )}
           </tbody>
         </table>
       </div>

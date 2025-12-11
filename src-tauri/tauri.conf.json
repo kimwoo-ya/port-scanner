@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "tauri-menubar-react",
+  "productName": "tauri-traymenu-app",
   "version": "0.1.0",
-  "identifier": "com.kyw.tauri-menubar-react",
+  "identifier": "com.kyw.tauri-traymenu-app",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -12,9 +12,16 @@
   "app": {
     "windows": [
       {
-        "title": "tauri-menubar-react",
-        "width": 800,
-        "height": 600
+        "fullscreen": false,
+        "width": 500,
+        "resizable": false,
+        "title": "tauri-traymenu-app",
+        "height": 700,
+        "visible": false,
+        "hiddenTitle": true,
+        "decorations": false,
+        "focus": false,
+        "skipTaskbar": true
       }
     ],
     "security": {
@@ -24,12 +31,6 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ]
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"]
   }
 }
