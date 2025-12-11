@@ -18,7 +18,7 @@ export const useSystemPort = () => {
     // 3초마다 refetch
     const interval = setInterval(() => {
       fetchPorts();
-    }, 500);
+    }, 5000);
 
     // 언마운트 시 정리
     return () => clearInterval(interval);
