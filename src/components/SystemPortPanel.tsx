@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSystemPort } from '../hooks/useSystemPort';
 import '../styles/SystemPortPanel.css';
 import useProcessKill from '../hooks/useProcessKill';
