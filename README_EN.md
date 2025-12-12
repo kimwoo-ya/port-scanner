@@ -1,4 +1,4 @@
-# Tauri Tray App (System Port Manager)
+# Port scanner
 
 <p align="center">
   <img src="src-tauri/icons/icon.png" alt="Port Scanner Logo" width="256" height="256" />
