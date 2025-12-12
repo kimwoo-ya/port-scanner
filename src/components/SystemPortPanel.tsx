@@ -9,10 +9,6 @@ import useProcessKill from '../hooks/useProcessKill';
 const SystemPortPanel = () => {
   const { portDict, loading, refetch, addSkipProcess, resetStore, portCount } = useSystemPort();
   const { killAndRefresh } = useProcessKill(refetch);
-  useEffect(() => {
-    //console.log('>>>>' + JSON.stringify(portDict));
-    console.log('Object.entries(portDict).length:' + Object.entries(portDict).length);
-  }, [portDict]);
 
   /*
    * Optimized sorting logic using useMemo.
@@ -27,7 +23,6 @@ const SystemPortPanel = () => {
     <div className="layout-container">
       <div className="controls">
         <button onClick={refetch} disabled={loading} className="btn refresh-btn">
-          {/*{loading ? '조회중...' : ``}*/}
           Refresh ({portCount})
         </button>
         <button className="btn reset-btn" onClick={resetStore}>
@@ -51,7 +46,7 @@ const SystemPortPanel = () => {
                 sortedProcessEntries.map(([processName, ports]) => (
                   <>
                     <tr className="proc-header">
-                      <td>{processName}</td>
+                      <td title={processName}>{processName}</td>
                       <td colSpan={2}></td>
                       <td>
                         <button className="btn-sm danger" onClick={() => addSkipProcess(processName)} title="mute this process.">
