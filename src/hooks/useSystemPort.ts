@@ -139,7 +139,7 @@ export const useSystemPort = () => {
     if (!storeLoaded) return;
 
     // Fixed polling interval to match local constant (3 seconds).
-    const POLLING_INTERVAL_MS = 3000;
+    const POLLING_INTERVAL_MS = 1000;
     const interval = setInterval(() => {
       fetchPorts();
     }, POLLING_INTERVAL_MS);
