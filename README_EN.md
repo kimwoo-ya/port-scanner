@@ -77,6 +77,10 @@ This application is verified to work on:
 - **Linux (Ubuntu/GNOME)**: Supported.
   - *Note*: Tray icon behavior may vary depending on the Desktop Environment (DE). `libwebkit2gtk` and app indicator support may be required.
 
+## 🔒 Privacy & Security
+
+This application **does NOT collect or transmit any user data to external servers**. All processing happens locally on your machine. The "hidden" process list is also stored only in your local configuration file.
+
 ## 📂 Project Structure
 
 - `src-tauri/src/lib.rs`: Main backend logic (Tray setup, port scanning, process killing).
