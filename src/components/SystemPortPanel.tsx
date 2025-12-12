@@ -30,10 +30,11 @@ const SystemPortPanel = () => {
     <>
       <div className="controls">
         <button onClick={refetch} disabled={loading} className="btn refresh-btn">
-          {loading ? '조회중...' : `포트 새로고침 (${portCount})`}
+          {/*{loading ? '조회중...' : ``}*/}
+          Refresh ({portCount})
         </button>
         <button className="btn reset-btn" onClick={resetStore}>
-          스토리지 초기화
+          Reset Storage
         </button>
       </div>
 
@@ -50,31 +51,32 @@ const SystemPortPanel = () => {
           <tbody>
             {sortedProcessEntries.length > 0 ? (
               sortedProcessEntries.map(([processName, ports]) => (
-                  <>
-                    <tr className="proc-header">
-                      <td colSpan={3}>{processName}</td>
-                      <td>
-                        <button className="btn-sm danger" onClick={() => addSkipProcess(processName)}>
-                          🔕
-                        </button>
-                      </td>
-                    </tr>
-                    {ports
-                      .sort((o1, o2) => o1.local_port - o2.local_port)
-                      .map((portInfo, i) => (
-                        <tr key={`${processName}-${portInfo.local_port}-${i}`} className="port-row">
-                          <td>{portInfo.local_port}</td>
-                          <td>{portInfo.pid}</td>
-                          <td>{portInfo.state}</td>
-                          <td>
-                            <button className="btn-sm" onClick={() => killAndRefresh(portInfo.pid)}>
-                              🗑️
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                  </>
-                ))
+                <>
+                  <tr className="proc-header">
+                    <td>{processName}</td>
+                    <td colSpan={2}></td>
+                    <td>
+                      <button className="btn-sm danger" onClick={() => addSkipProcess(processName)} title="mute this process.">
+                        🔕
+                      </button>
+                    </td>
+                  </tr>
+                  {ports
+                    .sort((o1, o2) => o1.local_port - o2.local_port)
+                    .map((portInfo, i) => (
+                      <tr key={`${processName}-${portInfo.local_port}-${i}`} className="port-row">
+                        <td>{portInfo.local_port}</td>
+                        <td>{portInfo.pid}</td>
+                        <td>{portInfo.state}</td>
+                        <td>
+                          <button className="btn-sm" onClick={() => killAndRefresh(portInfo.pid)} title="kill this process.">
+                            🗑️
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                </>
+              ))
             ) : (
               <>
                 <tr>

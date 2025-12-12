@@ -10,13 +10,14 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "macOSPrivateApi": true,
     "windows": [
       {
         "fullscreen": false,
-        "width": 540,
+        "width": 400,
         "resizable": false,
         "title": "port-scanner",
-        "height": 600,
+        "height": 500,
         "visible": false,
         "hiddenTitle": true,
         "decorations": false,
