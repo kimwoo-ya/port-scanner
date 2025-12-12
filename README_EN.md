@@ -27,6 +27,7 @@ A minimalistic system tray application built with **Tauri v2**, **Rust**, and **
 - **Backend**: Rust
   - [`sysinfo`](https://crates.io/crates/sysinfo): Robust process management and cross-platform kill commands.
   - [`netstat2`](https://crates.io/crates/netstat2): Network socket information retrieval.
+  - `tauri-plugin-opener`: Open external links and files.
   - `tauri-plugin-positioner`: Window positioning relative to tray icon.
   - `tauri-plugin-store`: Persistent settings storage.
 - **Frontend**: React + TypeScript
