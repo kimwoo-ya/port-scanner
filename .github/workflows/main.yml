@@ -1,0 +1,59 @@
+name: pnpm-deploy
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      targetStage:
+        description: "배포 환경"
+        type: choice
+        default: master
+        required: true
+        options: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.17.0"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - uses: actions/cache@v4
+        id: cache
+        with:
+          path: |
+            node_modules
+            .pnpm-store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      ##############################################
+      # Release 생성 & 빌드 산출물 업로드
+      ##############################################
+      - name: Build & Upload to GitHub Releases
+        uses: tauri-apps/tauri-action@v0
+        with:
+          tagName: app-v__VERSION__        # 자동으로 package.version 사용
+          releaseName: "App v__VERSION__"
+          releaseBody: "자동 배포된 Tauri 앱 빌드입니다."
+          releaseDraft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
