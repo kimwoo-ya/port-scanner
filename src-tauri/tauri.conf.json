@@ -13,15 +13,16 @@
     "windows": [
       {
         "fullscreen": false,
-        "width": 500,
+        "width": 540,
         "resizable": false,
         "title": "tauri-traymenu-app",
-        "height": 700,
+        "height": 600,
         "visible": false,
         "hiddenTitle": true,
         "decorations": false,
         "focus": false,
-        "skipTaskbar": true
+        "skipTaskbar": true,
+        "transparent": true
       }
     ],
     "security": {

@@ -1,6 +1,6 @@
 /* Main Container: Card Style */
 .panel {
-  max-width: 800px;
+  max-width: 500px;
   margin: 2rem auto;
   padding: 1.5rem;
   background-color: #ffffff;
@@ -10,11 +10,11 @@
 
 /* Controls Area */
 .controls {
+  max-width: 500px;
+  margin: 0.5rem auto; /* Reduced from 2rem to 0.5rem */
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  gap: 1rem;
+  justify-content:right;
+  gap: 10px;
 }
 
 /* Button Base Styles */

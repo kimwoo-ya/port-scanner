@@ -20,7 +20,21 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
+
+  /* [IMPROVEMENT] Hide scrollbar but keep functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+
+  /* [IMPROVEMENT] Rounded corners for the entire window */
+  border-radius: 12px;
+  overflow: hidden; /* Ensure content obeys border radius */
 }
+
+/* Hide scrollbar for Chrome/Safari/Opera */
+body::-webkit-scrollbar {
+  display: none;
+}
+
 
 #root {
   width: 100%;
