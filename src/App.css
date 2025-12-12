@@ -21,19 +21,21 @@ body {
   justify-content: center;
   align-items: flex-start;
 
-  /* [IMPROVEMENT] Hide scrollbar but keep functionality */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-
   /* [IMPROVEMENT] Rounded corners for the entire window */
   border-radius: 12px;
   /* overflow: hidden;  <-- This blocked scrolling. Removed to allow content to scroll. */
   overflow-y: auto; /* Enable vertical rolling */
 }
 
-/* Hide scrollbar for Chrome/Safari/Opera */
-body::-webkit-scrollbar {
+/* Hide scrollbar globally for Chrome/Safari/Opera */
+*::-webkit-scrollbar {
   display: none;
+}
+
+/* Hide scrollbar for Firefox/IE/Edge globally */
+html, body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 
