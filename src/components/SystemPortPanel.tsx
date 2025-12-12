@@ -5,9 +5,6 @@ import useProcessKill from '../hooks/useProcessKill';
 
 /**
  * Component to display system ports and control processes.
- *
- * [IMPROVEMENT:5] The sorting logic inside the render method (Object.entries...sort) could be expensive if the list is large.
- * Consider attempting to move this sorting logic into the `useSystemPort` hook or memoizing the result with `useMemo` to avoid re-sorting on every render.
  */
 const SystemPortPanel = () => {
   const { portDict, loading, refetch, addSkipProcess, resetStore, portCount } = useSystemPort();

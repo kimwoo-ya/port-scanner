@@ -15,7 +15,6 @@ The main panel component displayed in the tray window.
   - Allows "skipping" (hiding) specific processes.
   - Allows killing processes.
   - "Refresh" and "Reset Store" buttons.
-- **Improvement Note (Score: 5)**: The sorting logic is currently done inside the render cycle. Moving this to `useMemo` or the hook level would optimize rendering performance.
 
 ## Hooks
 
@@ -30,9 +29,6 @@ Manages the application state and data fetching.
   - **Polling**: Fetches ports every 5 seconds.
   - **Store Integration**: Loads and saves `skipProcessNameList` to `.settings.dat`.
   - **Deduplication**: Removes duplicate port entries.
-- **Improvement Notes**:
-  - **(Score: 5)**: Polling interval comment mismatch (says 3s, code is 5s).
-  - **(Score: 5)**: Reduce repetitive deduplication logic by using more efficient data structures if scaling is needed.
 
 ### `src/hooks/useProcessKill.ts`
 Encapsulates the logic for killing a process.
