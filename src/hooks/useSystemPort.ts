@@ -3,6 +3,11 @@ import { invoke } from '@tauri-apps/api/core';
 import { Store } from '@tauri-apps/plugin-store';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+/**
+ * Custom hook to manage system ports, polling, and process filtering.
+ *
+ * @returns {object} An object containing port data, loading state, and control functions.
+ */
 export const useSystemPort = () => {
   const [ports, setPorts] = useState<PortInfo[]>([]);
   const [portDict, setPortDict] = useState<PortInfoDict>({});
@@ -12,12 +17,14 @@ export const useSystemPort = () => {
   const storeRef = useRef<Store | null>(null);
   const [storeLoaded, setStoreLoaded] = useState(false);
 
+
+
   // --- Store 로드 (한번만)
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const store = await Store.load('.settings.dat'); // 권한 설정이 되어 있어야 함
+        const store = await Store.load('.settings.dat');
         storeRef.current = store;
         if (!mounted) return;
 
@@ -67,21 +74,24 @@ export const useSystemPort = () => {
         await storeRef.current!.set('skipProcessNameList', hiddenProcesses);
         await storeRef.current!.save();
         fetchPorts();
+        console.log('fetchPorts called...');
       } catch (e) {
         console.error('[store] save error', e);
       }
     })();
   }, [hiddenProcesses]);
 
-  // --- 중복 제거 유틸
+  // --- 중복 제거 유틸 (Deduplication Utility)
+  // Optimized using Map to ensure uniqueness by key (local_port + pid).
   const removeDuplicates = useCallback((list: PortInfo[]) => {
-    const seen = new Set<string>();
-    return list.filter((p) => {
-      const key = `${p.local_port}-${p.pid}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    const map = new Map<string, PortInfo>();
+    for (const p of list) {
+       const key = `${p.local_port}-${p.pid}`;
+       if (!map.has(key)) {
+         map.set(key, p);
+       }
+    }
+    return Array.from(map.values());
   }, []);
 
   // --- 포트 조회 (항상 최신 hiddenProcesses를 사용하도록 dep에 포함)
@@ -114,17 +124,29 @@ export const useSystemPort = () => {
 
   // --- portDict 갱신 (ports가 바뀔 때마다)
   useEffect(() => {
-    if (ports.length > 0) {
-      const dict: PortInfoDict = ports.reduce((acc, port) => {
-        const name = port.process_name || 'unknown';
-        acc[name] ??= [];
-        acc[name].push(port);
-        return acc;
-      }, {} as PortInfoDict);
+    const dict: PortInfoDict = ports.reduce((acc, port) => {
+      const name = port.process_name || 'unknown';
+      acc[name] ??= [];
+      acc[name].push(port);
+      return acc;
+    }, {} as PortInfoDict);
 
-      setPortDict(dict);
-    }
+    setPortDict(dict);
   }, [ports]);
+
+  // [Moved] Polling Effect
+  useEffect(() => {
+    if (!storeLoaded) return;
+
+    // Fixed polling interval to match local constant (1.5 seconds).
+    const POLLING_INTERVAL_MS = 1500;
+    const interval = setInterval(() => {
+      fetchPorts();
+    }, POLLING_INTERVAL_MS);
+
+    // 언마운트 시 정리
+    return () => clearInterval(interval);
+  }, [storeLoaded, fetchPorts]);
 
   // --- 스킵 프로세스 추가 (stale-free 함수형 업데이트)
   const addSkipProcess = useCallback((process_name: string) => {
