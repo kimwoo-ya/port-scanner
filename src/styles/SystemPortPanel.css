@@ -1,20 +1,35 @@
 /* Main Container: Card Style */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh; /* Occupy most of the view, leaving space for margins */
+  width: 100%;
+}
+
 .panel {
-  max-width: 340px;
-  /*width: 80%;*/
-  padding: 1.5rem;
+  flex-grow: 1;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem 1rem 1rem 1rem; /* Adjust padding */
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box; /* Include padding in width */
+  overflow: hidden; /* Prevent spillover */
+  display: flex;
+  flex-direction: column;
+  /* height removed, handled by flex-grow */
 }
 
 /* Controls Area */
 .controls {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   display: flex;
-  justify-content: right;
+  justify-content: flex-end; /* Standard syntax */
   gap: 10px;
+  flex-shrink: 0; /* Prevent controls from shrinking */
+  padding-right: 0.5rem;
 }
 
 /* Button Base Styles */
@@ -30,6 +45,8 @@
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  white-space: nowrap; /* Prevent button text wrap */
+  flex-shrink: 0;
 }
 
 .btn:active {
@@ -54,7 +71,7 @@
 .refresh-btn:hover {
   background-color: #4338ca; /* Indigo 700 */
   box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
-  transform: scale(1.1);
+  transform: scale(1.02); /* Reduced scale for better feel */
 }
 
 /* Reset Button (Secondary) */
@@ -69,7 +86,16 @@
   background-color: #f9fafb; /* Gray 50 */
   border-color: #d1d5db; /* Gray 300 */
   color: #374151; /* Gray 700 */
-  transform: scale(1.1);
+  transform: scale(1.02); /* Reduced scale */
+}
+
+/* Scrollable Table Wrapper */
+.table-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 0; /* Important for flex child scroll */
+  padding-right: 2px; /* Avoid cutting off scrollbar if visible */
 }
 
 /* Table Styles */
@@ -78,27 +104,48 @@
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.925rem;
+  table-layout: fixed; /* Fixed layout for text overflow */
 }
 
 .port-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   text-align: center;
-  padding-top: 0.2rem;
+  padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   color: #6b7280; /* Gray 500 */
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.05em;
-  background-color: #fff;
+  background-color: #fff; /* Sticky headers need bg */
+  border-bottom: 2px solid #f3f4f6;
+  white-space: nowrap; /* Prevent headers from wrapping */
 }
 
 .port-table td {
   text-align: center;
   /*padding: 1rem;*/
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid #f3f4f6;
   vertical-align: middle;
+
+  /* Text overflow handling */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Specific column widths if possible, but auto-layout with table-layout:fixed distributes evenly or by content if not specified.
+   Let's ensure Process Name (usually first) gets space
+*/
+.port-table th:first-child,
+.port-table td:first-child {
+  text-align: left;
+  padding-left: 0.5rem;
+  max-width: 120px; /* Limit process name width */
 }
 
 .port-table tbody tr:last-child td {
@@ -125,27 +172,31 @@
 
 /* Small Buttons in Table */
 .btn-sm {
-  padding: 6px 10px;
-  font-size: 0.85rem;
+  padding: 4px 8px; /* Adjusted padding */
+  font-size: 0.8rem;
   line-height: 1;
   border-radius: 6px;
-  border: none;
+  border: 1px solid transparent; /* fixed border */
   cursor: pointer;
-  background: transparent;
-  transition: background-color 0.2s;
+  background: #f3f4f6; /* Slight bg for visibility */
+  transition: all 0.2s;
+  color: #6b7280;
 }
 
 .btn-sm:hover {
   background-color: #e5e7eb;
-  transform: scale(1.3);
+  color: #374151;
+  transform: translateY(-1px); /* More subtle hover */
 }
 
 /* Danger Action (Kill) */
 .btn-sm.danger {
   color: #ef4444; /* Red 500 */
+  background: #fef2f2;
 }
 
 .btn-sm.danger:hover {
   background-color: #fee2e2; /* Red 100 */
-  transform: scale(1.3);
+  color: #dc2626;
+  transform: translateY(-1px);
 }
