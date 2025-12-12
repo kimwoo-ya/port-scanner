@@ -17,18 +17,7 @@ export const useSystemPort = () => {
   const storeRef = useRef<Store | null>(null);
   const [storeLoaded, setStoreLoaded] = useState(false);
 
-  useEffect(() => {
-    if (!storeLoaded) return;
 
-    // Fixed polling interval to match local constant (3 seconds).
-    const POLLING_INTERVAL_MS = 3000;
-    const interval = setInterval(() => {
-      fetchPorts();
-    }, POLLING_INTERVAL_MS);
-
-    // 언마운트 시 정리
-    return () => clearInterval(interval);
-  }, [storeLoaded]);
 
   // --- Store 로드 (한번만)
   useEffect(() => {
@@ -144,6 +133,20 @@ export const useSystemPort = () => {
 
     setPortDict(dict);
   }, [ports]);
+
+  // [Moved] Polling Effect
+  useEffect(() => {
+    if (!storeLoaded) return;
+
+    // Fixed polling interval to match local constant (1.5 seconds).
+    const POLLING_INTERVAL_MS = 1500;
+    const interval = setInterval(() => {
+      fetchPorts();
+    }, POLLING_INTERVAL_MS);
+
+    // 언마운트 시 정리
+    return () => clearInterval(interval);
+  }, [storeLoaded, fetchPorts]);
 
   // --- 스킵 프로세스 추가 (stale-free 함수형 업데이트)
   const addSkipProcess = useCallback((process_name: string) => {

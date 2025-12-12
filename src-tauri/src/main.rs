@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    tauri_traymenu_app_lib::run()
+    port_scanner_lib::run()
 }

@@ -20,7 +20,24 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
+
+  /* [IMPROVEMENT] Rounded corners for the entire window */
+  border-radius: 12px;
+  /* overflow: hidden;  <-- This blocked scrolling. Removed to allow content to scroll. */
+  overflow-y: auto; /* Enable vertical rolling */
 }
+
+/* Hide scrollbar globally for Chrome/Safari/Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox/IE/Edge globally */
+html, body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 
 #root {
   width: 100%;
