@@ -27,7 +27,8 @@ body {
 
   /* [IMPROVEMENT] Rounded corners for the entire window */
   border-radius: 12px;
-  overflow: hidden; /* Ensure content obeys border radius */
+  /* overflow: hidden;  <-- This blocked scrolling. Removed to allow content to scroll. */
+  overflow-y: auto; /* Enable vertical rolling */
 }
 
 /* Hide scrollbar for Chrome/Safari/Opera */
