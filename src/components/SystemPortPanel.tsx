@@ -5,9 +5,6 @@ import useProcessKill from '../hooks/useProcessKill';
 
 /**
  * Component to display system ports and control processes.
- *
- * [IMPROVEMENT:5] The sorting logic inside the render method (Object.entries...sort) could be expensive if the list is large.
- * Consider attempting to move this sorting logic into the `useSystemPort` hook or memoizing the result with `useMemo` to avoid re-sorting on every render.
  */
 const SystemPortPanel = () => {
   const { portDict, loading, refetch, addSkipProcess, resetStore, portCount } = useSystemPort();
@@ -27,7 +24,7 @@ const SystemPortPanel = () => {
   }, [portDict]);
 
   return (
-    <>
+    <div className="layout-container">
       <div className="controls">
         <button onClick={refetch} disabled={loading} className="btn refresh-btn">
           {/*{loading ? '조회중...' : ``}*/}
@@ -39,57 +36,59 @@ const SystemPortPanel = () => {
       </div>
 
       <div className="panel">
-        <table className="port-table">
-          <thead>
-            <tr>
-              <th>Local Port</th>
-              <th>PID</th>
-              <th>State</th>
-              <th>Options</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedProcessEntries.length > 0 ? (
-              sortedProcessEntries.map(([processName, ports]) => (
+        <div className="table-container">
+          <table className="port-table">
+            <thead>
+              <tr>
+                <th>Local Port</th>
+                <th>PID</th>
+                <th>State</th>
+                <th>Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedProcessEntries.length > 0 ? (
+                sortedProcessEntries.map(([processName, ports]) => (
+                  <>
+                    <tr className="proc-header">
+                      <td>{processName}</td>
+                      <td colSpan={2}></td>
+                      <td>
+                        <button className="btn-sm danger" onClick={() => addSkipProcess(processName)} title="mute this process.">
+                          🔕
+                        </button>
+                      </td>
+                    </tr>
+                    {ports
+                      .sort((o1, o2) => o1.local_port - o2.local_port)
+                      .map((portInfo, i) => (
+                        <tr key={`${processName}-${portInfo.local_port}-${i}`} className="port-row">
+                          <td>{portInfo.local_port}</td>
+                          <td>{portInfo.pid}</td>
+                          <td>{portInfo.state}</td>
+                          <td>
+                            <button className="btn-sm" onClick={() => killAndRefresh(portInfo.pid)} title="kill this process.">
+                              🗑️
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                  </>
+                ))
+              ) : (
                 <>
-                  <tr className="proc-header">
-                    <td>{processName}</td>
-                    <td colSpan={2}></td>
-                    <td>
-                      <button className="btn-sm danger" onClick={() => addSkipProcess(processName)} title="mute this process.">
-                        🔕
-                      </button>
+                  <tr>
+                    <td colSpan={4}>
+                      <h3>nothing...</h3>
                     </td>
                   </tr>
-                  {ports
-                    .sort((o1, o2) => o1.local_port - o2.local_port)
-                    .map((portInfo, i) => (
-                      <tr key={`${processName}-${portInfo.local_port}-${i}`} className="port-row">
-                        <td>{portInfo.local_port}</td>
-                        <td>{portInfo.pid}</td>
-                        <td>{portInfo.state}</td>
-                        <td>
-                          <button className="btn-sm" onClick={() => killAndRefresh(portInfo.pid)} title="kill this process.">
-                            🗑️
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
                 </>
-              ))
-            ) : (
-              <>
-                <tr>
-                  <td colSpan={4}>
-                    <h3>nothing...</h3>
-                  </td>
-                </tr>
-              </>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

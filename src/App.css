@@ -22,7 +22,6 @@ body {
   justify-content: center;
   align-items: flex-start;
 
-  /* [IMPROVEMENT] Rounded corners for the entire window */
   border-radius: 12px;
   /* overflow: hidden;  <-- This blocked scrolling. Removed to allow content to scroll. */
   overflow-y: auto; /* Enable vertical rolling */
