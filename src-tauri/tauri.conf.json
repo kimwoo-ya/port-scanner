@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "tauri-traymenu-app",
+  "productName": "port-scanner",
   "version": "0.1.0",
-  "identifier": "com.kyw.tauri-traymenu-app",
+  "identifier": "com.kyw.port-scanner",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -15,7 +15,7 @@
         "fullscreen": false,
         "width": 540,
         "resizable": false,
-        "title": "tauri-traymenu-app",
+        "title": "port-scanner",
         "height": 600,
         "visible": false,
         "hiddenTitle": true,

@@ -1,6 +1,6 @@
 # Cross-Platform Verification Report
 
-본 문서는 `tauri-traymenu-app`의 다양한 운영체제(Windows, macOS, Linux) 호환성 검증 결과를 기술합니다.
+본 문서는 `port-scanner`의 다양한 운영체제(Windows, macOS, Linux) 호환성 검증 결과를 기술합니다.
 
 ## 1. Backend (Rust)
 

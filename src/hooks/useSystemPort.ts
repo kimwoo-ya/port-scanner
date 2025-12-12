@@ -138,8 +138,8 @@ export const useSystemPort = () => {
   useEffect(() => {
     if (!storeLoaded) return;
 
-    // Fixed polling interval to match local constant (3 seconds).
-    const POLLING_INTERVAL_MS = 1000;
+    // Fixed polling interval to match local constant (1.5 seconds).
+    const POLLING_INTERVAL_MS = 1500;
     const interval = setInterval(() => {
       fetchPorts();
     }, POLLING_INTERVAL_MS);

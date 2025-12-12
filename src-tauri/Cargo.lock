@@ -2842,6 +2842,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "port-scanner"
+version = "0.1.0"
+dependencies = [
+ "netstat2",
+ "serde",
+ "serde_json",
+ "sysinfo",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-opener",
+ "tauri-plugin-positioner",
+ "tauri-plugin-store",
+]
+
+[[package]]
 name = "potential_utf"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4017,21 +4032,6 @@ dependencies = [
  "webview2-com",
  "windows 0.61.3",
  "wry",
-]
-
-[[package]]
-name = "tauri-traymenu-app"
-version = "0.1.0"
-dependencies = [
- "netstat2",
- "serde",
- "serde_json",
- "sysinfo",
- "tauri",
- "tauri-build",
- "tauri-plugin-opener",
- "tauri-plugin-positioner",
- "tauri-plugin-store",
 ]
 
 [[package]]

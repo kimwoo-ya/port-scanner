@@ -7,7 +7,7 @@ A minimalistic system tray application built with **Tauri v2**, **Rust**, and **
 - **Port Monitoring**: Real-time list of processes listening on TCP ports.
 - **Process Management**: Terminate processes directly from the list.
 - **Filtering**: "Skip" (hide) specific process names from the view. Persisted locally.
-- **Auto-Refresh**: Automatically updates the list every 1 seconds.
+- **Auto-Refresh**: Automatically updates the list every 1.5 seconds.
 - **System Tray Integration**:
   - Runs quietly in the background.
   - Left-click to toggle the management panel.
@@ -38,7 +38,7 @@ A minimalistic system tray application built with **Tauri v2**, **Rust**, and **
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd tauri-traymenu-app
+   cd port-scanner
    ```
 
 2. Install frontend dependencies:
