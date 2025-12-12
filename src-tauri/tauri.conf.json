@@ -14,7 +14,7 @@
     "windows": [
       {
         "fullscreen": false,
-        "width": 400,
+        "width": 450,
         "resizable": false,
         "title": "port-scanner",
         "height": 500,
