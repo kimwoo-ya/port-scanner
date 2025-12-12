@@ -1,8 +1,14 @@
 # Tauri Tray App (System Port Manager)
 
+<p align="center">
+  <img src="src-tauri/icons/icon.png" alt="Port Scanner Logo" width="256" height="256" />
+</p>
+
 [![Korean](https://img.shields.io/badge/lang-Korean-green.svg)](README.md)
 
 A minimalistic system tray application built with **Tauri v2**, **Rust**, and **React** to monitor and manage active TCP listening ports on your machine.
+
+![Port Scanner Screenshot](docs/screenshot.png)
 
 ## ✨ Features
 
