@@ -23,7 +23,6 @@ This is the main library file where the application logic resides.
       - `on_tray_icon_event`: Handles tray events.
       - Updates the tray position using `tauri_plugin_positioner`.
       - Toggles window visibility on left-click.
-  - **Improvement Note (Score: 7)**: The setup logic is quite dense inside `run`. Segregating the tray setup into a dedicated helper function would improve readability.
 
 - **`get_ports()`** (Command)
   - **Purpose**: helper to get active TCP listening ports.
@@ -37,11 +36,9 @@ This is the main library file where the application logic resides.
   - **Platform Specifics**:
     - **macOS/Linux**: Uses `kill -9 <pid>`.
     - **Windows**: Uses `taskkill /PID <pid> /F`.
-  - **Improvement Note (Score: 6)**: Currently uses raw shell commands. Using a library like `sysinfo` for process termination would be more robust and cross-platform friendly.
 
 - **`get_process_name(pid: u32)`**
   - **Purpose**: Resolves a PID to its process name.
-  - **Improvement Note (Score: 7)**: This function instantiates `System::new_all()` on *every call*. This is inefficient. A shared `System` state or batch processing would likely improve performance significantly.
 
 ## Dependencies
 - **tauri**: Core framework.

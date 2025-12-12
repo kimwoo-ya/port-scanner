@@ -5,17 +5,10 @@ import useProcessKill from '../hooks/useProcessKill';
 
 /**
  * Component to display system ports and control processes.
- *
- * [IMPROVEMENT:5] The sorting logic inside the render method (Object.entries...sort) could be expensive if the list is large.
- * Consider attempting to move this sorting logic into the `useSystemPort` hook or memoizing the result with `useMemo` to avoid re-sorting on every render.
  */
 const SystemPortPanel = () => {
   const { portDict, loading, refetch, addSkipProcess, resetStore, portCount } = useSystemPort();
   const { killAndRefresh } = useProcessKill(refetch);
-  useEffect(() => {
-    //console.log('>>>>' + JSON.stringify(portDict));
-    console.log('Object.entries(portDict).length:' + Object.entries(portDict).length);
-  }, [portDict]);
 
   /*
    * Optimized sorting logic using useMemo.
@@ -30,7 +23,6 @@ const SystemPortPanel = () => {
     <div className="layout-container">
       <div className="controls">
         <button onClick={refetch} disabled={loading} className="btn refresh-btn">
-          {/*{loading ? '조회중...' : ``}*/}
           Refresh ({portCount})
         </button>
         <button className="btn reset-btn" onClick={resetStore}>
@@ -54,7 +46,7 @@ const SystemPortPanel = () => {
                 sortedProcessEntries.map(([processName, ports]) => (
                   <>
                     <tr className="proc-header">
-                      <td>{processName}</td>
+                      <td title={processName}>{processName}</td>
                       <td colSpan={2}></td>
                       <td>
                         <button className="btn-sm danger" onClick={() => addSkipProcess(processName)} title="mute this process.">
