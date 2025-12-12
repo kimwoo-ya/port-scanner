@@ -20,11 +20,11 @@ export const useSystemPort = () => {
   useEffect(() => {
     if (!storeLoaded) return;
 
-    // [IMPROVEMENT:5] The comment says "3 seconds", but the interval is set to 5000ms (5 seconds).
-    // Consider aligning these or making the interval configurable.
+    // Fixed polling interval to match local constant (3 seconds).
+    const POLLING_INTERVAL_MS = 3000;
     const interval = setInterval(() => {
       fetchPorts();
-    }, 5000);
+    }, POLLING_INTERVAL_MS);
 
     // 언마운트 시 정리
     return () => clearInterval(interval);
@@ -93,16 +93,16 @@ export const useSystemPort = () => {
   }, [hiddenProcesses]);
 
   // --- 중복 제거 유틸 (Deduplication Utility)
-  // [IMPROVEMENT:5] This deduplication logic runs every time fetchPorts is called.
-  // If the dataset grows, using a Map or specialized Set structure might be slightly more efficient, though likely negligible for small port lists.
+  // Optimized using Map to ensure uniqueness by key (local_port + pid).
   const removeDuplicates = useCallback((list: PortInfo[]) => {
-    const seen = new Set<string>();
-    return list.filter((p) => {
-      const key = `${p.local_port}-${p.pid}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    const map = new Map<string, PortInfo>();
+    for (const p of list) {
+       const key = `${p.local_port}-${p.pid}`;
+       if (!map.has(key)) {
+         map.set(key, p);
+       }
+    }
+    return Array.from(map.values());
   }, []);
 
   // --- 포트 조회 (항상 최신 hiddenProcesses를 사용하도록 dep에 포함)

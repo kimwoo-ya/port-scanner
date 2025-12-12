@@ -1,91 +1,141 @@
-/* 전체 레이아웃 */
+/* Main Container: Card Style */
 .panel {
-  padding: 20px;
-  background: #ffffff;
-  font-family: system-ui, sans-serif;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* 상단 버튼 영역 */
+/* Controls Area */
 .controls {
   display: flex;
-  gap: 5px;
-  padding: 10px 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 
+/* Button Base Styles */
 .btn {
-  background: #4a90e2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.925rem;
+  font-weight: 500;
+  border-radius: 8px;
   border: none;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 14px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.btn:hover {
-  background: #357ec7;
+.btn:active {
+  transform: scale(0.98);
 }
 
 .btn:disabled {
-  background: #7faee0;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
+/* Refresh Button (Primary) */
+.refresh-btn {
+  background-color: #4f46e5; /* Indigo 600 */
+  color: white;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background-color: #4338ca; /* Indigo 700 */
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+/* Reset Button (Secondary) */
 .reset-btn {
-  background: #888;
+  background-color: white;
+  color: #6b7280; /* Gray 500 */
+  border: 1px solid #e5e7eb; /* Gray 200 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .reset-btn:hover {
-  background: #666;
+  background-color: #f9fafb; /* Gray 50 */
+  border-color: #d1d5db; /* Gray 300 */
+  color: #374151; /* Gray 700 */
 }
 
-/* 소형 버튼 */
-.btn-sm {
-  padding: 4px 8px;
-  font-size: 13px;
-}
-
-.btn-sm.danger {
-  /*background: #e74c3c;*/
-}
-
-.btn-sm.danger:hover {
-  /*background: #c0392b;*/
-}
-
-/* 테이블 */
+/* Table Styles */
 .port-table {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.port-table th,
-.port-table td {
-  padding: 10px;
-  border-bottom: 1px solid #e2e2e2;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.925rem;
 }
 
 .port-table th {
-  background: #f0f4ff;
   text-align: left;
+  padding: 1rem;
+  color: #6b7280; /* Gray 500 */
   font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #f3f4f6;
+  background-color: #fff;
 }
 
-/* 프로세스 그룹 헤더 */
-.proc-header {
-  background: #f7f7f7;
-  font-weight: bold;
-  border-top: 2px solid #ddd;
+.port-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
 }
 
+.port-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Process Header Row */
 .proc-header td {
-  padding: 12px;
+  background-color: #f9fafb; /* Gray 50 */
+  font-weight: 600;
+  color: #111827; /* Gray 900 */
+  font-size: 0.95rem;
+  border-top: 1px solid #e5e7eb;
 }
 
-/* 포트 row hover 효과 */
-.port-row:hover {
-  background: #f5faff;
-  transition: background 0.15s;
+/* Port Row */
+.port-row:hover td {
+  background-color: #f3f4f6; /* Gray 100 */
 }
+
+.port-row td {
+  color: #4b5563; /* Gray 600 */
+}
+
+/* Small Buttons in Table */
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  line-height: 1;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  transition: background-color 0.2s;
+}
+
+.btn-sm:hover {
+  background-color: #e5e7eb;
+}
+
+/* Danger Action (Kill) */
+.btn-sm.danger {
+  color: #ef4444; /* Red 500 */
+}
+
+.btn-sm.danger:hover {
+  background-color: #fee2e2; /* Red 100 */
+}
+

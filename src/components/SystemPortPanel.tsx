@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSystemPort } from '../hooks/useSystemPort';
 import '../styles/SystemPortPanel.css';
 import useProcessKill from '../hooks/useProcessKill';
@@ -15,6 +15,15 @@ const SystemPortPanel = () => {
   useEffect(() => {
     //console.log('>>>>' + JSON.stringify(portDict));
     console.log('Object.entries(portDict).length:' + Object.entries(portDict).length);
+  }, [portDict]);
+
+  /*
+   * Optimized sorting logic using useMemo.
+   * This prevents re-sorting the entire list on every render unless portDict changes.
+   */
+  const sortedProcessEntries = useMemo(() => {
+    if (!portDict || Object.keys(portDict).length === 0) return [];
+    return Object.entries(portDict).sort((o1, o2) => o1[0].localeCompare(o2[0]));
   }, [portDict]);
 
   return (
@@ -39,10 +48,8 @@ const SystemPortPanel = () => {
             </tr>
           </thead>
           <tbody>
-            {portDict && Object.entries(portDict).length > 0 ? (
-              Object.entries(portDict)
-                .sort((o1, o2) => o1[0].localeCompare(o2[0]))
-                .map(([processName, ports]) => (
+            {sortedProcessEntries.length > 0 ? (
+              sortedProcessEntries.map(([processName, ports]) => (
                   <>
                     <tr className="proc-header">
                       <td colSpan={3}>{processName}</td>
