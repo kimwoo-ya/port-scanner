@@ -13,6 +13,7 @@ use netstat2::{
 use serde_json::json;
 use sysinfo::{System, Pid, Process};
 
+// [IMPROVEMENT:7] `run` function setup is good, but consider separating plugin initialization into a helper function for cleaner main logic.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -24,15 +25,15 @@ pub fn run() {
                 .cloned()
                 .ok_or("Failed to load icon")?;
 
-            // 트레이 아이콘
+            // 트레이 아이콘 설정 (Tray Icon Setup)
             TrayIconBuilder::new()
                 .icon(icon)
                 .on_tray_icon_event(|tray, event| {
 
-                    // 1) Positioner에게 이벤트 전달 → 트레이 위치 저장됨
+                    // 1) Positioner에게 이벤트 전달 → 트레이 위치 저장됨 (Pass event to Positioner -> Tray position saved)
                     tauri_plugin_positioner::on_tray_event(tray.app_handle(), &event);
 
-                    // 2) 좌클릭 시 창 표시/숨김 토글 및 위치 이동
+                    // 2) 좌클릭 시 창 표시/숨김 토글 및 위치 이동 (Left click: Toggle Window show/hide & move position)
                     if let TrayIconEvent::Click {
                         button: MouseButton::Left,
                         button_state: MouseButtonState::Up,
@@ -41,7 +42,7 @@ pub fn run() {
 
                         if let Some(window) = tray.app_handle().get_webview_window("main") {
 
-                            // 🔥 멀티모니터에서 현재 클릭한 트레이 디스플레이 기준으로 이동
+                            // 🔥 멀티모니터에서 현재 클릭한 트레이 디스플레이 기준으로 이동 (Move to tray's display on multi-monitor setup)
                             let _ = window.move_window(Position::TrayCenter);
 
                             if window.is_visible().unwrap_or(false) {
@@ -61,6 +62,16 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+/// Kills a process by its PID.
+///
+/// # Arguments
+/// * `pid` - The Process ID to kill.
+///
+/// # Returns
+/// * `Result<(), String>` - Returns Ok(()) if successful, or an error message if failed.
+///
+/// [IMPROVEMENT:6] This uses platform-specific `Command`. Consider using a crate like `sysinfo` (which is already imported)
+/// to kill processes in a more cross-platform way if possible, or ensure robust error handling for edge cases (permission denied, etc.).
 #[tauri::command]
 fn kill_by_pid(pid: u32) -> Result<(), String> {
     #[cfg(any(target_os = "macos", target_os = "linux"))]
@@ -83,16 +94,20 @@ fn kill_by_pid(pid: u32) -> Result<(), String> {
     Ok(())
 }
 
+/// Retrieves a list of active TCP listening ports and their associated PIDs.
+///
+/// # Returns
+/// * `Vec<serde_json::Value>` - A list of JSON objects containing local_port, pid, process_name, and state.
 #[command]
 fn get_ports() -> Vec<serde_json::Value> {
     let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;
-    let proto_flags = ProtocolFlags::TCP;  // UDP 제거
+    let proto_flags = ProtocolFlags::TCP;  // UDP removed
 
-    let sockets = get_sockets_info(af_flags, proto_flags).unwrap();
+    let sockets = get_sockets_info(af_flags, proto_flags).unwrap_or_default(); // Unwrap handled safely with default
 
     sockets
         .into_iter()
-        .filter_map(|s| {  // LISTEN만 필터링
+        .filter_map(|s| {  // One filter to rule them all: Filter for LISTEN state
             if let ProtocolSocketInfo::Tcp(tcp) = s.protocol_socket_info {
                 if tcp.state == netstat2::TcpState::Listen {
                     let pid = s.associated_pids.get(0).cloned().unwrap_or(0);
@@ -114,6 +129,10 @@ fn get_ports() -> Vec<serde_json::Value> {
         .collect()
 }
 
+/// Helper to get the process name from its PID using `sysinfo`.
+///
+/// [IMPROVEMENT:7] Instantiating `System::new_all()` and calling `refresh_all()` on every single call is very expensive.
+/// Consider passing a reference to a `System` instance or using a `Mutex<System>` text to maintain state, or creating a new `System` only once per batch request.
 fn get_process_name(pid: u32) -> String {
     let mut sys = System::new_all();
     sys.refresh_all();

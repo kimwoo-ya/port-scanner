@@ -3,6 +3,11 @@ import { invoke } from '@tauri-apps/api/core';
 import { Store } from '@tauri-apps/plugin-store';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+/**
+ * Custom hook to manage system ports, polling, and process filtering.
+ *
+ * @returns {object} An object containing port data, loading state, and control functions.
+ */
 export const useSystemPort = () => {
   const [ports, setPorts] = useState<PortInfo[]>([]);
   const [portDict, setPortDict] = useState<PortInfoDict>({});
@@ -15,7 +20,8 @@ export const useSystemPort = () => {
   useEffect(() => {
     if (!storeLoaded) return;
 
-    // 3초마다 refetch
+    // [IMPROVEMENT:5] The comment says "3 seconds", but the interval is set to 5000ms (5 seconds).
+    // Consider aligning these or making the interval configurable.
     const interval = setInterval(() => {
       fetchPorts();
     }, 5000);
@@ -86,7 +92,9 @@ export const useSystemPort = () => {
     })();
   }, [hiddenProcesses]);
 
-  // --- 중복 제거 유틸
+  // --- 중복 제거 유틸 (Deduplication Utility)
+  // [IMPROVEMENT:5] This deduplication logic runs every time fetchPorts is called.
+  // If the dataset grows, using a Map or specialized Set structure might be slightly more efficient, though likely negligible for small port lists.
   const removeDuplicates = useCallback((list: PortInfo[]) => {
     const seen = new Set<string>();
     return list.filter((p) => {

@@ -2,7 +2,12 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useCallback, useState } from 'react';
 
-export const useProcessKill = (refetch: () => void) => {
+/**
+ * Custom hook to handle killing processes.
+ *
+ * @param {function} refetch - Function to refresh the port list after killing a process.
+ */
+const useProcessKill = (refetch: () => void) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
