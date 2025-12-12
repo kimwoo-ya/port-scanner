@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, windows-latest]
+        platform: [ubuntu-latest, windows-latest, macos-latest]
     
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 30
@@ -54,6 +54,21 @@ jobs:
             libssl-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
+
+      # Windows 시스템 의존성 설치
+      - name: Install dependencies (Windows only)
+        if: matrix.platform == 'windows-latest'
+        run: |
+          # Windows는 Visual Studio Build Tools가 기본 제공됨
+          # 추가 의존성이 필요한 경우 여기에 작성
+          echo "Windows dependencies check"
+
+      # macOS 시스템 의존성 설치
+      - name: Install dependencies (macOS only)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          # macOS는 대부분의 의존성이 이미 설치되어 있음
+          echo "macOS dependencies check"
       
       - uses: actions/cache@v4
         id: cache
