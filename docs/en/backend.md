@@ -33,15 +33,17 @@ This is the main library file where the application logic resides.
 
 - **`kill_by_pid(pid: u32)`** (Command)
   - **Purpose**: Kill a specific process.
-  - **Platform Specifics**:
-    - **macOS/Linux**: Uses `kill -9 <pid>`.
-    - **Windows**: Uses `taskkill /PID <pid> /F`.
+  - **Details**:
+    - Uses `sysinfo` crate's native `process.kill()` method.
+    - **Windows**: Calls `TerminateProcess` API.
+    - **Unix (macOS/Linux)**: Sends `SIGKILL` signal.
 
 - **`get_process_name(pid: u32)`**
   - **Purpose**: Resolves a PID to its process name.
 
 ## Dependencies
 - **tauri**: Core framework.
+- **tauri-plugin-opener**: Open external links and files.
 - **tauri-plugin-positioner**: Helper for positioning windows relative to the tray.
 - **netstat2**: Network socket information.
 - **sysinfo**: System and process information.

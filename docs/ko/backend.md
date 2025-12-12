@@ -33,15 +33,17 @@
 
 - **`kill_by_pid(pid: u32)`** (Command)
   - **목적**: 특정 프로세스를 종료합니다.
-  - **플랫폼 특이사항**:
-    - **macOS/Linux**: `kill -9 <pid>` 명령어 사용.
-    - **Windows**: `taskkill /PID <pid> /F` 명령어 사용.
+  - **상세**:
+    - `sysinfo` 크레이트의 내장 함수 `process.kill()`을 사용하여 프로세스를 종료합니다.
+    - **Windows**: `TerminateProcess` API를 호출합니다.
+    - **Unix (macOS/Linux)**: `SIGKILL` 시그널을 전송합니다.
 
 - **`get_process_name(pid: u32)`**
   - **목적**: PID를 프로세스 이름으로 변환합니다.
 
 ## 의존성 (Dependencies)
 - **tauri**: 핵심 프레임워크.
+- **tauri-plugin-opener**: 외부 링크 및 파일 열기 기능.
 - **tauri-plugin-positioner**: 트레이 아이콘 기준 윈도우 위치 지정을 위한 헬퍼.
 - **netstat2**: 네트워크 소켓 정보.
 - **sysinfo**: 시스템 및 프로세스 정보.

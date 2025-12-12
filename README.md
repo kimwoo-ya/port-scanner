@@ -27,6 +27,7 @@
 - **Backend**: Rust
   - [`sysinfo`](https://crates.io/crates/sysinfo): 강력한 프로세스 관리 및 크로스 플랫폼 종료 명령어 지원.
   - [`netstat2`](https://crates.io/crates/netstat2): 네트워크 소켓 정보 검색.
+  - `tauri-plugin-opener`: 외부 링크 및 파일 열기 기능.
   - `tauri-plugin-positioner`: 트레이 아이콘 기준 윈도우 위치 조정.
   - `tauri-plugin-store`: 설정 데이터의 영구 저장.
 - **Frontend**: React + TypeScript
