@@ -1,6 +1,7 @@
 /* Main Container: Card Style */
 .panel {
-  max-width: 350px;
+  max-width: 340px;
+  /*width: 80%;*/
   padding: 1.5rem;
   background-color: #ffffff;
   border-radius: 16px;
